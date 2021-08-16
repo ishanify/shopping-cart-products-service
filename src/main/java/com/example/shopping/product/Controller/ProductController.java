@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.shopping.product.Model.CreateProductRequest;
 import com.example.shopping.product.Model.Product;
+import com.example.shopping.product.Model.UpdateProductRequest;
 import com.example.shopping.product.Service.ProductService;
 
 @RestController
@@ -26,6 +29,14 @@ public class ProductController {
 		
 	}
 	
+	//Get single product by product ID
+	@GetMapping("/product/{id}")
+	public Product getSinglePproduct(@PathVariable int id) {
+		
+		return productService.getSingleProduct(id);
+		
+	}
+	
 	//create products in DB
 	@PostMapping("/products")
 	public Product createPproduct( @RequestBody CreateProductRequest request){
@@ -33,6 +44,11 @@ public class ProductController {
 
 		return productService.createProducts(request);
 		
+	}
+	
+	@PatchMapping("/product/sold/{id}")
+	public Product editPproduct(@PathVariable int id, @RequestBody UpdateProductRequest updatedProduct) {
+		return productService.editProduct(id, updatedProduct);
 	}
 
 }
