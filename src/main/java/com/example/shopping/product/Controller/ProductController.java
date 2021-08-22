@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.shopping.product.Model.CreateProductRequest;
 import com.example.shopping.product.Model.Product;
 import com.example.shopping.product.Model.UpdateProductRequest;
 import com.example.shopping.product.Service.ProductService;
@@ -39,7 +38,7 @@ public class ProductController {
 	
 	//create products in DB
 	@PostMapping("/products")
-	public Product createPproduct( @RequestBody CreateProductRequest request){
+	public Product createPproduct( @RequestBody Product request){
 		 
 
 		return productService.createProducts(request);
