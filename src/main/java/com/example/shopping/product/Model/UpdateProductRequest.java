@@ -1,7 +1,5 @@
 package com.example.shopping.product.Model;
 
-import lombok.Builder;
-
 
 public class UpdateProductRequest {
 

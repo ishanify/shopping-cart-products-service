@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.shopping.product.Model.Product;
+import com.example.shopping.product.Model.ProductQuantity;
 import com.example.shopping.product.Model.UpdateProductRequest;
 import com.example.shopping.product.Service.ProductService;
 
@@ -45,9 +46,16 @@ public class ProductController {
 		
 	}
 	
-	@PatchMapping("/product/sold/{id}")
+	@PatchMapping("/product/sold/{id}") // todo: create another patch for adding product to inventory
 	public Product editPproduct(@PathVariable int id, @RequestBody UpdateProductRequest updatedProduct) {
 		return productService.editProduct(id, updatedProduct);
+	}
+	
+	//validate if requested product and quantities are available in DB, returns product details
+	//can be extended to restrict the fields to expose - maybe when images or more metadat is added.
+	@PostMapping("/product/validate")
+	public List<Product> validatePproduct(@RequestBody List<ProductQuantity> productQuantityRequest) {
+		return productService.validateProduct(productQuantityRequest);
 	}
 
 }

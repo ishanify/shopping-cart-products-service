@@ -2,7 +2,6 @@ package com.example.shopping.product.Model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Entity
 @Builder(toBuilder = true)
@@ -28,6 +26,5 @@ public class Product {
 	private Integer stock;
 	private BigDecimal price;
 	private LocalDate createdDate;
-
 
 }
