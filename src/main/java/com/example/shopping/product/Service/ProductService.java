@@ -4,7 +4,9 @@ import com.example.shopping.product.Exception.ProductNotFoundException;
 import com.example.shopping.product.Exception.ProductQuantityLowException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -52,7 +54,37 @@ public class ProductService {
 
 		return productRepository.save(existingProduct);
 	}
+	
+	public void editMultipleProducts(List<ProductQuantity> productQuantityRequest) {
+		
+		
+		HashMap<Integer, Integer> requestMap=convertProductQuantityListToMap(productQuantityRequest);
+		Iterator<Product> existingProductItr = productRepository.findAllById(requestMap.keySet()).iterator();
 
+		List<Product> updatedProductList = new ArrayList<Product>();
+		while( existingProductItr.hasNext())
+		{
+			Product product=existingProductItr.next();
+			Integer stockChange = requestMap.get(product.getId());
+			
+			if(product.getStock()<stockChange) {
+				throw new ProductQuantityLowException();
+			}
+			Integer updatedStock=product.getStock()-stockChange;
+			updatedProductList.add(Product.builder()
+					.id(product.getId())
+					.name(product.getName())
+					.stock(updatedStock)
+					.price(product.getPrice())
+					.createdDate(product.getCreatedDate())
+					.build());
+		}
+		
+		
+
+		 productRepository.saveAll(updatedProductList);
+		 
+	}
 	public Product getSingleProduct(Integer id) {
 		return productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
@@ -61,15 +93,18 @@ public class ProductService {
 	// returns non duplicate list of only available products with valid quantities.
 	public List<Product> validateProduct(List<ProductQuantity> productQuantityRequest) {
 
-		// already takes care of duplicate product in request
-		HashMap<Integer, Integer> requestMap = productQuantityRequest.stream()
-				.collect(Collectors.toMap(pq -> pq.getProductId(), pq -> pq.getQuantity(), (p, q) -> p, HashMap::new));
-
+		HashMap<Integer, Integer> requestMap =convertProductQuantityListToMap(productQuantityRequest);
+		
 		Iterable<Product> existingProductList = productRepository.findAllById(requestMap.keySet());
 		List<Product> filteredProducts = StreamSupport.stream(existingProductList.spliterator(), false)
-				.filter(p -> p.getStock() - requestMap.get(p.getId()) >= 0).collect(Collectors.toList());
+				.filter(p -> !(p.getStock().compareTo(requestMap.get(p.getId())) < 0)).collect(Collectors.toList());
 
 		return filteredProducts;
+	}
+
+	private HashMap<Integer, Integer> convertProductQuantityListToMap(List<ProductQuantity> productQuantityRequest) {
+				return  productQuantityRequest.stream()
+						.collect(Collectors.toMap(pq -> pq.getProductId(), pq -> pq.getQuantity(), (p, q) -> p, HashMap::new));
 	}
 
 }

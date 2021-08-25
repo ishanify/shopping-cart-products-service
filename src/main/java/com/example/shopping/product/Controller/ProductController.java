@@ -57,5 +57,10 @@ public class ProductController {
 	public List<Product> validatePproduct(@RequestBody List<ProductQuantity> productQuantityRequest) {
 		return productService.validateProduct(productQuantityRequest);
 	}
+	
+	@PatchMapping("/product/sold") // todo: create another patch for adding product to inventory
+	public void editMultiplePproducts(@RequestBody List<ProductQuantity> productQuantityRequest) {
+		productService.editMultipleProducts(productQuantityRequest);
+	}
 
 }
